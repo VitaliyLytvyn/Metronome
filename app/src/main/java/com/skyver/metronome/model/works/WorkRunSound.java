@@ -1,7 +1,8 @@
 package com.skyver.metronome.model.works;
 
 import android.content.Context;
-import android.media.MediaPlayer;
+import android.media.AudioManager;
+import android.media.SoundPool;
 
 import com.skyver.metronome.R;
 
@@ -10,11 +11,24 @@ import com.skyver.metronome.R;
  */
 public class WorkRunSound extends WorkRunCommon {
 
-    private MediaPlayer mPlayer;
     private static String TAG = WorkRunCommon.class.getSimpleName();
-    Context context;
+    private Context context;
 
-    public WorkRunSound(Context context) {
+    private final int MAX_STREAMS = 1;
+
+    private final int DEFAULT_SOUND = R.raw.variant_1;
+
+    private SoundPool soundPool;
+    private volatile boolean isLoaded;
+    private int soundId;
+    private int currentSound;
+
+
+    public WorkRunSound(Context context, int newSound) {
+
+        if(newSound == 0)
+            currentSound = DEFAULT_SOUND;
+        else currentSound = newSound;
 
         this.context = context;
         initiatePlayer();
@@ -22,40 +36,40 @@ public class WorkRunSound extends WorkRunCommon {
 
     private void initiatePlayer() {
 
-        // Set up the Media Player
-        mPlayer = MediaPlayer.create(context, R.raw.metronome_up);
+        soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
 
-        if (mPlayer != null) {
+                isLoaded = true;
+            }
+        });
 
-            mPlayer.setLooping(false);
-            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        soundId = soundPool.load(context, currentSound, 1);
+    }
 
-                @Override
-                public void onCompletion(MediaPlayer mp) {
+    public void setNewSoundId(int newSound){
 
-                    // Rewind to beginning
-                    mPlayer.seekTo(0);
-                }
-            });
-        }
+        soundPool.unload(soundId);
+        isLoaded = false;
+        soundId = soundPool.load(context, newSound, 1);
     }
 
     @Override
     public void run() {
 
-        // Start playing
-        if (null != mPlayer) {
-            mPlayer.start();
-        }
+        if(isLoaded)
+            soundPool.play(soundId, 1, 1, 0, 0, 1);
+
     }
 
     @Override
     public void finalizeWorkObject() {
 
-        if (mPlayer != null) {
-
-            mPlayer.stop();
-            mPlayer.release();
+        if(soundPool != null){
+            soundPool.unload(soundId);
+            soundPool.release();
+            soundPool = null;
         }
         context = null;
     }

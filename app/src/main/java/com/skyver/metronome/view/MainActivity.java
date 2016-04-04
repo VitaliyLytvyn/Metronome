@@ -6,7 +6,10 @@ import android.hardware.Camera;
 import android.os.Bundle;
 
 import android.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,8 +44,8 @@ public class MainActivity
 
 
     //range - min and max of bpm
-    private static final int MIN_BPM = 20;
-    private static final int MAX_BPM = 180;
+    private static final int MIN_BPM = 10;
+    private static final int MAX_BPM = 300;
     public static final int DEFAULT_BPM = 60;
 
     public static final String BTN_VIBRO = "vibro_button";
@@ -50,8 +53,10 @@ public class MainActivity
     public static final String BTN_SOUND = "sound_button";
     public static final String BTN_START = "start_button";
     public static final String BPM_FIELD = "bpm_field";
+    public static final String SOUND_FIELD = "sound_field";
 
     private int mCurrentBPM;
+    private int mCurrentSound;
 
     private boolean mIsFlashAvailable;
 
@@ -64,8 +69,6 @@ public class MainActivity
 
     private ImageView indicator;
 
-
-
     /**
      * Hook method called when a new instance of Activity is created.
      * One time initialization code goes here, e.g., initializing
@@ -77,6 +80,11 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ////////////////
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        myToolbar.inflateMenu(R.menu.menu_main);
 
         initialiseComponents();
 
@@ -105,6 +113,7 @@ public class MainActivity
         mStartBtn.setChecked(sharedPref.getBoolean(BTN_START, false));  //default is false
 
         mCurrentBPM = sharedPref.getInt(BPM_FIELD, DEFAULT_BPM);
+        mCurrentSound = sharedPref.getInt(SOUND_FIELD, R.raw.variant_1);
 
         indicator = (ImageView) findViewById(R.id.indicatorView);
 
@@ -143,6 +152,7 @@ public class MainActivity
         editor.putBoolean(BTN_VIBRO, mVibroBtn.isChecked());
         editor.putBoolean(BTN_START, mStartBtn.isChecked());
         editor.putInt(BPM_FIELD, mCurrentBPM);
+        editor.putInt(SOUND_FIELD, mCurrentSound);
         editor.commit();
     }
 
@@ -165,7 +175,7 @@ public class MainActivity
      * this method is invoked every time when 'Flash' button is pressed
      * unless there is a Torch mode so we sett flag 'mIsFlashAvailable'
      * this method can return false even if flash is present
-     * becouse the Camera instance can be in use
+     * because the Camera instance can be in use
      * */
     private boolean checkIfFlashAvailable() {
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
@@ -217,7 +227,7 @@ public class MainActivity
 
                     //in generl flash can be present but not available at the moment(busy)
                     //in such a case we allow checking this option - flash we'll be used
-                    //as soon as it freed
+                    //as soon as it is freed
                     if(!mIsFlashAvailable && !checkIfFlashAvailable()){
                         mFlashBtn.setChecked(false);
                         Utils.showToast(this, "Flash is unavailable");
@@ -241,7 +251,7 @@ public class MainActivity
             }
             case R.id.buttonStartStop:{
                 if(((ToggleButton) btn).isChecked()) {
-                    isSuccess = getPresenter().startWorks(mCurrentBPM);
+                    isSuccess = getPresenter().startWorks(mCurrentBPM, mCurrentSound);
                     if(!isSuccess)
                         ((ToggleButton) btn).setChecked(false);
 
@@ -346,4 +356,46 @@ public class MainActivity
         }, 200);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        int soundId = mCurrentSound;
+
+        switch (id){
+
+            case R.id.variant_1 :
+                soundId = R.raw.variant_1;
+                break;
+
+            case R.id.variant_2 :
+                soundId = R.raw.variant_2;
+                break;
+
+            case R.id.variant_3 :
+                soundId = R.raw.variant_3;
+                break;
+
+            case R.id.variant_4 :
+                soundId = R.raw.variant_4;
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        mCurrentSound = soundId;
+        getPresenter().changeSound(soundId);
+        return true;
+    }
 }

@@ -163,10 +163,20 @@ public class ModelMetronome extends Handler implements MVP.ProvidedModelOps {
     }
 
     @Override
-    public boolean StartWorks(int interval) {
+    public boolean changeSound(int newSoundId) {
+        if(mService != null){
+            mService.changeSound(newSoundId);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    @Override
+    public boolean startWorks(int interval, int soundId) {
         mIsAllStopped = false;
         if(mService != null){
-            mService.startWorks(interval);
+            mService.startWorks(interval, soundId);
             return true;
         }
         else

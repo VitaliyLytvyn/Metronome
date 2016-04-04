@@ -43,7 +43,8 @@ public interface MVP {
         public void viewStarting();
         public void viewStopping();
         public boolean stopAllWorks();
-        public boolean startWorks(int interval);
+        public boolean startWorks(int interval, int soundId);
+        public boolean changeSound(int newSoundId);
         public boolean addWork(WorkTypes type);
         public boolean removeWork(WorkTypes type);
         public boolean changeBPM(int newBPM);
@@ -80,7 +81,8 @@ public interface MVP {
         public void startBinding();
         public void stopBinding();
         public boolean StopAllWorks();
-        public boolean StartWorks(int interval);
+        public boolean startWorks(int interval, int soundId);
+        public boolean changeSound(int newSoundId);
         public boolean addWork(WorkTypes type);
         public boolean removeWork(WorkTypes type);
         public boolean changeBPM(int newBPM);

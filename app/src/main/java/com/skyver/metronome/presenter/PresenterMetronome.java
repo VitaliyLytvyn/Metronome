@@ -53,8 +53,13 @@ public class PresenterMetronome extends GenericPresenter<MVP.RequiredPresenterOp
     }
 
     @Override
-    public boolean startWorks(int interval) {
-        return getModel().StartWorks(interval);
+    public boolean startWorks(int interval, int soundId) {
+        return getModel().startWorks(interval, soundId);
+    }
+
+    @Override
+    public boolean changeSound(int newSoundId) {
+        return getModel().changeSound(newSoundId);
     }
 
     @Override

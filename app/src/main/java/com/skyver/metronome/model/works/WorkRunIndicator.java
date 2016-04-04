@@ -16,6 +16,8 @@ public class WorkRunIndicator extends WorkRunCommon {
     @Override
     public void run() {
 
+        mLastStartedTime = System.currentTimeMillis();//////
+
         Message msg = Message.obtain();
         try {
             if(ServiceForWork.mMessenger != null)

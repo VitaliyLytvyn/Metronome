@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.Messenger;
 import android.preference.PreferenceManager;
 
+import com.skyver.metronome.R;
 import com.skyver.metronome.common.LifecycleLoggingService;
 import com.skyver.metronome.model.works.WorkRunCommon;
 import com.skyver.metronome.model.works.WorkRunFlash;
@@ -49,6 +50,8 @@ public class ServiceForWork extends LifecycleLoggingService {
 
     private int mBPM;
 
+    private int mCurrentSound;
+
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
@@ -71,8 +74,9 @@ public class ServiceForWork extends LifecycleLoggingService {
         return intent;
     }
 
-    public void startWorks(int bpm){
+    public void startWorks(int bpm, int soundId){
 
+        setSound(soundId);
         calculateNewInterval(bpm);
 
         for (WorkRunCommon work : mapCurrentWorks.values()){
@@ -81,6 +85,23 @@ public class ServiceForWork extends LifecycleLoggingService {
             work.setRunningState(future);
         }
         isWorksRunning = true;
+    }
+
+    private void setSound(int soundId) {
+
+        //if nothing to do then return
+        if(mCurrentSound == soundId)
+            return;
+        mCurrentSound = soundId;
+        if(mapCurrentWorks.containsKey(WorkTypes.SOUND)){
+            WorkRunCommon commonWork = mapCurrentWorks.get(WorkTypes.SOUND);
+            ((WorkRunSound)commonWork).setNewSoundId(soundId);
+        }
+    }
+
+    public void changeSound(int newSoundId){
+
+        setSound(newSoundId);
     }
 
     public void stopWorks(){
@@ -102,7 +123,7 @@ public class ServiceForWork extends LifecycleLoggingService {
                     work = new WorkRunFlash();
                     break;
                 case SOUND:
-                    work = new WorkRunSound(this);
+                    work = new WorkRunSound(this, mCurrentSound);
                     break;
                 case VIBRO:
                     work = new WorkRunVibro(this);
@@ -159,7 +180,7 @@ public class ServiceForWork extends LifecycleLoggingService {
 
         stopWorks();
 
-        startWorks(newBPM);
+        startWorks(newBPM, mCurrentSound);
     }
 
     private void calculateNewInterval(int bpm){
@@ -181,7 +202,7 @@ public class ServiceForWork extends LifecycleLoggingService {
                 Executors.newScheduledThreadPool(4);
 
         mapCurrentWorks = new HashMap<>();
-        mapCurrentWorks.put(WorkTypes.SOUND, new WorkRunSound(this));
+        mapCurrentWorks.put(WorkTypes.SOUND, new WorkRunSound(this, mCurrentSound));
         mapCurrentWorks.put(WorkTypes.INDICATOR, new WorkRunIndicator());
     }
 
@@ -210,8 +231,9 @@ public class ServiceForWork extends LifecycleLoggingService {
             mapCurrentWorks.put(WorkTypes.VIBRO, new WorkRunVibro(this));
 
         mBPM = sharedPref.getInt(MainActivity.BPM_FIELD, MainActivity.DEFAULT_BPM);
+        mCurrentSound = sharedPref.getInt(MainActivity.SOUND_FIELD, R.id.variant_1);
 
-        startWorks(mBPM);
+        startWorks(mBPM, mCurrentSound);
     }
 
     @Override
