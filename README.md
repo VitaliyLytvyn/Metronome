@@ -4,7 +4,6 @@ Metronome application. Used M-V-P pattern. Configuration changes does not affect
 
 Options that can be choosen(added/removed), in tact to the simple indicator: Sound, Vibration, Torch.
 
-<<<<<<< HEAD
-Both the state and the work, persists over configuration changes and even explicit exit from the appliction. Thus to abort implementation the "STOP" button should be pushed down.
+Both the state and the work, persists over configuration changes and even explicit exit from the application. Thus to abort implementation the "STOP" button should be pushed down.
 
 A tune can be choosen from menu.
