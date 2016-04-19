@@ -7,5 +7,3 @@ A tune can be chosen from the menu.
 The beats per minute rate can be changed by pressing '+'/'-' buttons or by entering the exact number.
 
 Both the state and the work, persist over configuration changes and the app keeps working even after explicit exit. Thus, to abort implementation the "STOP" button should be pushed down.
-
-A tune can be chosen from menu.

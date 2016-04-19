@@ -45,7 +45,7 @@ public class MainActivity
 
     //range - min and max of bpm
     private static final int MIN_BPM = 10;
-    private static final int MAX_BPM = 300;
+    private static final int MAX_BPM = 240;
     public static final int DEFAULT_BPM = 60;
 
     public static final String BTN_VIBRO = "vibro_button";
@@ -353,7 +353,7 @@ public class MainActivity
             public void run() {
                 indicator.setImageResource(R.drawable.presence_invisible);
             }
-        }, 200);
+        }, 150);
     }
 
     @Override

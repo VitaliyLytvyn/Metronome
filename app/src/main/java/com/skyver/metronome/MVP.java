@@ -31,8 +31,8 @@ public interface MVP {
 
     /**
      * This interface defines the minimum public API provided by the
-     * WeatherPresenter class in the Presenter layer to the
-     * DownloadWeathersActivity in the View layer.  It extends the
+     * PresenterMetronome class in the Presenter layer to the
+     * MainActivity in the View layer.  It extends the
      * PresenterOps interface, which is instantiated by the
      * MVP.RequiredViewOps interface used to define the parameter
      * that's passed to the onConfigurationChange() method.

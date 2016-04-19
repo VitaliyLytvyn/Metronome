@@ -4,13 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="0dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".view.MainActivity"
     tools:showIn="@layout/activity_main"
-    android:paddingTop="5dp">
+    android:paddingTop="3dp">
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"> <!--IMPORTANT otherwise backgrnd img. will not fill the whole screen -->
+
 
     <LinearLayout
         android:orientation="vertical"
@@ -54,8 +60,8 @@
                 android:gravity="center">
 
                 <ToggleButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:id="@+id/buttonVibro"
                     android:background="@drawable/btn_vibro_sel"
                     android:textOn=""
@@ -82,8 +88,8 @@
                 android:gravity="center">
 
                 <ToggleButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:id="@+id/buttonFlash"
                     android:background="@drawable/btn_flash_sel"
                     android:textOn=""
@@ -108,8 +114,8 @@
                 android:gravity="center">
 
                 <ToggleButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:id="@+id/buttonSound"
                     android:background="@drawable/btn_sound_sel"
                     android:textOn=""
@@ -229,8 +235,8 @@
                 android:id="@+id/textView5" />
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
                 android:id="@+id/indicatorView"
                 android:src="@drawable/presence_invisible"
                 android:adjustViewBounds="false" />
@@ -244,7 +250,7 @@
 
             <ToggleButton
                 android:layout_width="120dp"
-                android:layout_height="40dp"
+                android:layout_height="38dp"
                 android:text="New ToggleButton"
                 android:id="@+id/buttonStartStop"
                 android:textSize="20sp"
@@ -255,5 +261,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
